@@ -1,0 +1,88 @@
+Index: configure-schleuniger.cmd
+===================================================================
+--- configure-schleuniger.cmd	(Revision 0)
++++ configure-schleuniger.cmd	(Revision 6)
+@@ -0,0 +1,11 @@
++echo off
++echo --------------------------------------------------------------------------------
++echo WARNING: This batch file must be executed with the VISUAL STUDIO 2008 CONSOLE!!!
++echo --------------------------------------------------------------------------------
++pause
++echo --------------------------------------------------------------------------------
++echo Have you checked the correct directory name (Qt-Version, infix:VX, Platform) ?
++echo %CD%
++echo --------------------------------------------------------------------------------
++pause
++configure -prefix %CD%/qtbase -platform win32-msvc2008 -opensource -confirm-license -opengl desktop -qt-style-windows -no-audio-backend -qtlibinfix 5_3_1_V1-Win32-msvc2008
+Index: Qt.vsprops
+===================================================================
+--- Qt.vsprops	(Revision 0)
++++ Qt.vsprops	(Revision 6)
+@@ -0,0 +1,25 @@
++<?xml version="1.0" encoding="Windows-1252"?>
++<VisualStudioPropertySheet
++	ProjectType="Visual C++"
++	Version="8.00"
++	Name="Qt-V1-5.3.1-Win32-msvc2008"
++	>
++	<Tool
++		Name="VCCLCompilerTool"
++		AdditionalIncludeDirectories="$(QTDIR)\include"
++	/>
++	<Tool
++		Name="VCLinkerTool"
++		AdditionalLibraryDirectories="$(QTDIR)\lib"
++	/>
++	<UserMacro
++		Name="QTINFIX"
++		Value="5_3_1_V1-Win32-msvc2008"
++		PerformEnvironmentSet="true"
++	/>
++	<UserMacro
++		Name="QTDIR"
++		Value="%SVNDATA_ROOT%\Qt\Tags\5.3.1-V1-Win32-msvc2008\qtbase"
++		PerformEnvironmentSet="true"
++	/>
++</VisualStudioPropertySheet>
+Index: qtbase/mkspecs/win32-msvc2008/qmake.conf
+===================================================================
+--- qtbase/mkspecs/win32-msvc2008/qmake.conf	(Revision 5)
++++ qtbase/mkspecs/win32-msvc2008/qmake.conf	(Revision 6)
+@@ -22,7 +22,7 @@
+ QMAKE_LEXFLAGS          =
+ QMAKE_YACC              = byacc
+ QMAKE_YACCFLAGS         = -d
+-QMAKE_CFLAGS            = -nologo -Zm200 -Zc:wchar_t
++QMAKE_CFLAGS            = -nologo -Zm200
+ QMAKE_CFLAGS_WARN_ON    = -W3
+ QMAKE_CFLAGS_WARN_OFF   = -W0
+ QMAKE_CFLAGS_RELEASE    = -O2 -MD
+@@ -64,7 +64,7 @@
+ QMAKE_RUN_CXX_IMP_BATCH = $(CXX) -c $(CXXFLAGS) $(INCPATH) -Fo$@ @<<
+ 
+ QMAKE_LINK              = link
+-QMAKE_LFLAGS            = /NOLOGO /DYNAMICBASE /NXCOMPAT
++QMAKE_LFLAGS            = /NOLOGO /DYNAMICBASE /NXCOMPAT /MAP /DEBUG /OPT:REF /OPT:ICF
+ QMAKE_LFLAGS_RELEASE    = /INCREMENTAL:NO
+ QMAKE_LFLAGS_RELEASE_WITH_DEBUGINFO = /DEBUG /OPT:REF /INCREMENTAL:NO
+ QMAKE_LFLAGS_DEBUG      = /DEBUG
+Index: qtbase/src/corelib/tools/qdatetime.h
+===================================================================
+--- qtbase/src/corelib/tools/qdatetime.h	(Revision 5)
++++ qtbase/src/corelib/tools/qdatetime.h	(Revision 6)
+@@ -119,7 +119,10 @@
+     inline qint64 toJulianDay() const { return jd; }
+ 
+ private:
+-    static inline qint64 nullJd() { return std::numeric_limits<qint64>::min(); }
++	// CHANGES SCHLEUNIGER AG, April 2015 :: START
++    // https://bugreports.qt.io/browse/QTBUG-31469
++    static inline qint64 nullJd() { return (std::numeric_limits<qint64>::min)(); }
++	// CHANGES SCHLEUNIGER AG, April 2015 :: END
+     static inline qint64 minJd() { return Q_INT64_C(-784350574879); }
+     static inline qint64 maxJd() { return Q_INT64_C( 784354017364); }
+ 
+Index: 5.3.1-V1-Win32-WinCE6-WinEC7.reg
+===================================================================
+Kann nicht anzeigen: Dateityp ist als binär angegeben.
+svn:mime-type = application/octet-stream

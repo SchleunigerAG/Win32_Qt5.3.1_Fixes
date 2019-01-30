@@ -1,0 +1,6 @@
+Die hier abgelegten Dateien dienen als Vorlage der eingesetzten Qt Versionen.
+
+Folgend die aufgelisteten Änderungen:
+
+5.3.1-V1-Win32-msvc2008
+- resolve NOMINMAX compiler error in QDateTime
